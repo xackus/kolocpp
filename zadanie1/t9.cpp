@@ -14,15 +14,16 @@ using namespace std;
 class T9_dictionary {
 private:
 
-	char digit[128]; //a table for converting letters into digits
+	char digit[128]; //a lookup table for converting letters into digits
 
-	unordered_set<string> not_found; //returned when no match is found
+	static const unordered_set<string> not_found; //returned when no match is found
 
 	unordered_map<string, unordered_set<string>> data;
 
+	//helper function for filling the lookup table
 	void map(initializer_list<char> what, char to) {
 		for (char c : what) {
-			digit[c] = to;
+			digit[static_cast<size_t>(c)] = to;
 		}
 	}
 
@@ -36,15 +37,13 @@ public:
 		map( { 'p', 'q', 'r', 's' }, '7');
 		map( { 't', 'u', 'v' }, '8');
 		map( { 'w', 'x', 'y', 'z' }, '9');
-
-		not_found.insert("BRAK");
 	}
 
 	void add_word(const string& word) {
 		string converted;
 
 		for (char c : word) {
-			converted.push_back(digit[c]);
+			converted.push_back(digit[static_cast<size_t>(c)]);
 		}
 
 		//unordered_set will silently ignore duplicates
@@ -61,6 +60,8 @@ public:
 	}
 };
 
+const unordered_set<string> T9_dictionary::not_found = { "BRAK" };
+
 int main() {
 	T9_dictionary dict;
 	ifstream fin("slownik.txt");
@@ -72,7 +73,8 @@ int main() {
 
 	string line;
 	while (getline(fin, line)) {
-		if (line.empty() || find_if_not(line.begin(), line.end(), [](char c) {return islower(c);}) != line.end()) {
+		if (line.empty()
+				|| find_if_not(line.begin(), line.end(), [](char c) {return islower(c);}) != line.end()) {
 			cout << "niewlasciwy format pliku slownik.txt\n";
 			return 0;
 		}
@@ -81,7 +83,8 @@ int main() {
 	}
 
 	while (getline(cin, line)) {
-		if (line.empty() || find_if_not(line.begin(), line.end(), [](char c) {return isdigit(c);}) != line.end()) {
+		if (line.empty()
+				|| find_if_not(line.begin(), line.end(), [](char c) {return isdigit(c);}) != line.end()) {
 			cout << "niewlasciwy format wejscia\n";
 			return 0;
 		}

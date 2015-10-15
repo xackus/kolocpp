@@ -67,16 +67,16 @@ int main() {
 	ifstream fin("slownik.txt");
 
 	if (!fin) {
-		cout << "nie udalo sie wczytac pliku slownik.txt\n";
-		return 0;
+		cerr << "nie udalo sie wczytac pliku slownik.txt\n";
+		return 1;
 	}
 
 	string line;
 	while (getline(fin, line)) {
 		if (line.empty()
 				|| find_if_not(line.begin(), line.end(), [](char c) {return islower(c);}) != line.end()) {
-			cout << "niewlasciwy format pliku slownik.txt\n";
-			return 0;
+			cerr << "niewlasciwy format pliku slownik.txt\n";
+			return 2;
 		}
 
 		dict.add_word(line);
@@ -85,8 +85,8 @@ int main() {
 	while (getline(cin, line)) {
 		if (line.empty()
 				|| find_if_not(line.begin(), line.end(), [](char c) {return isdigit(c);}) != line.end()) {
-			cout << "niewlasciwy format wejscia\n";
-			return 0;
+			cerr << "niewlasciwy format wejscia\n";
+			return 3;
 		}
 
 		cout << line << ":";
